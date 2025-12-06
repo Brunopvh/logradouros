@@ -65,13 +65,13 @@ class WindowHome(AppPage):
         caminho, _ = QFileDialog.getOpenFileName(self.parent, "Selecionar Arquivo de Planilha", "", filtro)
         if caminho:
             self.selectedFileSheet = File(caminho)
-            self.lbl_planilha.setText(f"Planilha Selecionada: **{self.selectedFileSheet.basename()}**")
+            self.lbl_planilha.setText(f"Planilha: {self.selectedFileSheet.basename()}")
 
     def selecionar_pasta(self):
         caminho = QFileDialog.getExistingDirectory(self.parent, "Selecionar Pasta", "")
         if caminho:
             self.selectedOutputDir = Directory(caminho)
-            self.lbl_pasta.setText(f"Pasta Selecionada: **{self.selectedOutputDir.basename()}**")
+            self.lbl_pasta.setText(f"Pasta: {self.selectedOutputDir.basename()}")
 
 
 class PageProcessSheet(AppPage):
@@ -82,12 +82,12 @@ class PageProcessSheet(AppPage):
     def initUI(self):
         super().initUI()
         # Título
-        self.add_widget(QLabel("## ✍️ Etapa 2: Entrada de Informações Adicionais"))
+        self.add_widget(QLabel("Informações Adicionais"))
 
         # Rótulo e Caixa de Texto
         self.add_widget(QLabel("Digite informações para o processamento:"))
         self.txt_entrada = QLineEdit()
-        self.txt_entrada.setPlaceholderText("Ex: Código de operação, nome do relatório...")
+        self.txt_entrada.setPlaceholderText("Ex: Código de operação")
         self.add_widget(self.txt_entrada)
 
         # Botão Voltar e Processar em um layout horizontal

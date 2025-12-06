@@ -21,12 +21,10 @@ class PlanilhaProcessorApp(QWidget):
         self.setGeometry(100, 100, 700, 300)
 
         # Variáveis para armazenar os caminhos e o texto de entrada
-
         self.info_digitada = ""
 
         # Inicializa o QStackedWidget para gerenciar as páginas
         self.stacked_widget = QStackedWidget(self)
-
         self.init_ui()
 
     def init_ui(self):
@@ -34,31 +32,31 @@ class PlanilhaProcessorApp(QWidget):
         main_layout.addWidget(self.stacked_widget)
 
         # 1. Cria e adiciona a Página de Seleção (Índice 0)
-        self.page1 = QWidget()
-        self.page_home = WindowHome(self.page1, name='/home')
+        self.widgetPage1 = QWidget()
+        self.page_home = WindowHome(self.widgetPage1, name='/home')
         self.setup_page1()
-        self.stacked_widget.addWidget(self.page1)
 
-        # 2. Cria e adiciona a Página de Entrada de Dados (Índice 1)
+        # Cria e adiciona a Página de Entrada de Dados (Índice 1)
         self.page2 = QWidget()
-        self.page_process_sheet: PageProcessSheet = PageProcessSheet(self.page2, name='/process_sheet')
+        self.page_process_sheet = PageProcessSheet(self.page2, name='/process_sheet')
         self.setup_page2()
-        self.stacked_widget.addWidget(self.page2)
         self.setLayout(main_layout)
 
     ## --- Configuração da Página 1: Seleção de Arquivos ---
     def setup_page1(self):
         self.page_home.set_top_bar(TopBar())
         self.page_home.initUI()
-        self.page_home.connect_next_page(self.avancar_para_page2)
+        self.page_home.connect_next_page(self.go_to_page2)
+        self.stacked_widget.addWidget(self.widgetPage1)
 
     def setup_page2(self):
         self.page_process_sheet.set_top_bar(TopBar("Processamento"))
         self.page_process_sheet.initUI()
         self.page_process_sheet.connect_btn_back_page(self.stacked_widget)
         self.page_process_sheet.connect_process_action(self.processar_operacao_final)
+        self.stacked_widget.addWidget(self.page2)
 
-    def avancar_para_page2(self):
+    def go_to_page2(self):
         """Verifica se os caminhos foram selecionados antes de avançar."""
         if not self.page_home.check_selected_sheet():
             return
@@ -84,13 +82,7 @@ class PlanilhaProcessorApp(QWidget):
         print(f"Info Adicional: {self.info_digitada}")
 
         self.page_process_sheet.lbl_status.setText("⚙️ Processamento em andamento...")
-        # Substitua a linha abaixo pela sua lógica real
-        # Sua lógica que usa self.caminho_planilha, self.caminho_pasta e self.info_digitada
-        # import pandas as pd
-        # dados = pd.read_excel(self.caminho_planilha)
-        # resultado = processar(dados, self.caminho_pasta, self.info_digitada)
         self.page_process_sheet.lbl_status.setText("✅ PROCESSAMENTO CONCLUÍDO COM SUCESSO!")
-        print("--- PROCESSAMENTO CONCLUÍDO! ---")
 
 
 if __name__ == '__main__':
