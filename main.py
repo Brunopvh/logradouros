@@ -35,13 +35,13 @@ class PlanilhaProcessorApp(QWidget):
 
         # 1. Cria e adiciona a Página de Seleção (Índice 0)
         self.page1 = QWidget()
-        self.page_home = WindowHome(self.page1)
+        self.page_home = WindowHome(self.page1, name='/home')
         self.setup_page1()
         self.stacked_widget.addWidget(self.page1)
 
         # 2. Cria e adiciona a Página de Entrada de Dados (Índice 1)
         self.page2 = QWidget()
-        self.page_process_sheet: PageProcessSheet = PageProcessSheet(self.page2)
+        self.page_process_sheet: PageProcessSheet = PageProcessSheet(self.page2, name='/process_sheet')
         self.setup_page2()
         self.stacked_widget.addWidget(self.page2)
         self.setLayout(main_layout)
@@ -53,6 +53,7 @@ class PlanilhaProcessorApp(QWidget):
         self.page_home.connect_next_page(self.avancar_para_page2)
 
     def setup_page2(self):
+        self.page_process_sheet.set_top_bar(TopBar("Processamento"))
         self.page_process_sheet.initUI()
         self.page_process_sheet.connect_btn_back_page(self.stacked_widget)
         self.page_process_sheet.connect_process_action(self.processar_operacao_final)

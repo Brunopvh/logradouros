@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
 import sys
 from typing import Callable
 from PyQt5.QtWidgets import (
@@ -8,42 +8,47 @@ from PyQt5.QtWidgets import (
 )
 from soup_files import File, Directory, LibraryDocs, InputFiles
 
-from logradouros.app_core import PageHLayout, PageVLayout, HomePage, TopBar
+from logradouros.app_core import PageHLayout, PageVLayout, AppPage, TopBar
 
 
-class WindowHome(HomePage):
-    def __init__(self, parent: QWidget = None, *, name: str = '/home'):
+class WindowHome(AppPage):
+
+    def __init__(self, parent: QWidget = None, *, name: str = None):
         super().__init__(parent, name=name)
-        #self.parent = parent
         self.selectedFileSheet: File = None
         self.selectedOutputDir: Directory = None
 
     def initUI(self):
+        super().initUI()
+
         # Botão para Seleção de Planilha
+        self.containerSheet = QHBoxLayout()
         self.btn_planilha: QPushButton = QPushButton("📂 Selecionar Planilha (.xlsx, .csv, etc.)")
         self.btn_planilha.clicked.connect(self.selecionar_planilha)
-        self.addWidget(self.btn_planilha)
+        self.containerSheet.addWidget(self.btn_planilha)
         # Label Planilha
         self.lbl_planilha = QLabel("1. Nenhuma planilha selecionada.")
         self.lbl_planilha.setWordWrap(True)
-        self.addWidget(self.lbl_planilha)
+        self.containerSheet.addWidget(self.lbl_planilha)
 
         # Botão para Seleção de Pasta (Diretório)
+        self.containerDir = QHBoxLayout()
         self.btn_pasta: QPushButton = QPushButton("📁 Selecionar Pasta de Destino")
         self.btn_pasta.clicked.connect(self.selecionar_pasta)
-        self.addWidget(self.btn_pasta)
+        self.containerDir.addWidget(self.btn_pasta)
         # Label Pasta
         self.lbl_pasta = QLabel("2. Nenhuma pasta selecionada.")
         self.lbl_pasta.setWordWrap(True)
-        self.addWidget(self.lbl_pasta)
-
-        # Adiciona um separador visual
-        self.addWidget(QLabel("---"))
+        self.containerDir.addWidget(self.lbl_pasta)
 
         # Botão de Avançar
+        self.containerButtons = QVBoxLayout()
         self.btn_avancar: QPushButton = QPushButton("➡️ Avançar para a Próxima Etapa")
         self.btn_avancar.setStyleSheet("background-color: #007bff; color: white; font-weight: bold; padding: 10px;")
-        self.addWidget(self.btn_avancar)
+        self.containerButtons.addWidget(self.btn_avancar)
+        self.add_layout(self.containerSheet)
+        self.add_layout(self.containerDir)
+        self.add_layout(self.containerButtons)
 
     def check_selected_sheet(self) -> bool:
         """Verifica se os caminhos foram selecionados antes de avançar."""
@@ -69,20 +74,21 @@ class WindowHome(HomePage):
             self.lbl_pasta.setText(f"Pasta Selecionada: **{self.selectedOutputDir.basename()}**")
 
 
-class PageProcessSheet(PageVLayout):
+class PageProcessSheet(AppPage):
 
-    def __init__(self, parent: QWidget = None):
-        super().__init__(parent)
+    def __init__(self, parent: QWidget = None, *, name: str = None):
+        super().__init__(parent, name=name)
 
     def initUI(self):
+        super().initUI()
         # Título
-        self.addWidget(QLabel("## ✍️ Etapa 2: Entrada de Informações Adicionais"))
+        self.add_widget(QLabel("## ✍️ Etapa 2: Entrada de Informações Adicionais"))
 
         # Rótulo e Caixa de Texto
-        self.addWidget(QLabel("Digite informações para o processamento:"))
+        self.add_widget(QLabel("Digite informações para o processamento:"))
         self.txt_entrada = QLineEdit()
         self.txt_entrada.setPlaceholderText("Ex: Código de operação, nome do relatório...")
-        self.addWidget(self.txt_entrada)
+        self.add_widget(self.txt_entrada)
 
         # Botão Voltar e Processar em um layout horizontal
         h_layout = QHBoxLayout()
@@ -94,11 +100,11 @@ class PageProcessSheet(PageVLayout):
         self.btn_processar_final.setStyleSheet(
             "background-color: #4CAF50; color: white; font-weight: bold; padding: 10px;")
         h_layout.addWidget(self.btn_processar_final)
-        self.addLayout(h_layout)
+        self.add_layout(h_layout)
 
         # Rótulo de Status
         self.lbl_status = QLabel("")
-        self.addWidget(self.lbl_status)
+        self.add_widget(self.lbl_status)
 
     def connect_process_action(self, cmd: Callable):
         self.btn_processar_final.clicked.connect(cmd)

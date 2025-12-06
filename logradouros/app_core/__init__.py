@@ -1,3 +1,3 @@
 from .page import (
-    PageVLayout, PageHLayout, HomePage, TopBar
+    PageVLayout, PageHLayout, AppPage, TopBar
 )
